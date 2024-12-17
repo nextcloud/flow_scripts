@@ -1,5 +1,4 @@
 import * as wmill from "windmill-client";
-import type { paths } from "nextcloud-openapi-clients/schema/schema.d.ts";
 import createClient, { type Middleware } from "openapi-fetch";
 
 export async function main(
