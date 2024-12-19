@@ -1,5 +1,5 @@
-import * as wmill from "npm:windmill-client@1";
-import axios from "npm:axios";
+import * as wmill from "windmill-client@1";
+import axios from "axios";
 
 // fill the type, or use the +Resource type to get a type-safe reference to a resource
 // type Postgresql = object
@@ -18,7 +18,7 @@ export async function main(
     const res = await axios.request(
       {
         method: "PUT",
-        url: `/remote.php/dav/files/${userId}/${path}`,
+        url: `/remote.php/dav/files/${userId || ncResource.username}/${path}`,
         baseURL: ncResource.baseUrl,
         data,
         headers: {
@@ -44,4 +44,3 @@ export async function main(
     console.log(e.response.data);
   }
 }
-

@@ -1,5 +1,5 @@
-import * as wmill from "npm:windmill-client@1";
-import axios from "npm:axios";
+import * as wmill from "windmill-client@1";
+import axios from "axios";
 
 // fill the type, or use the +Resource type to get a type-safe reference to a resource
 // type Postgresql = object
@@ -14,7 +14,7 @@ export async function main(
     nextcloudResource,
   );
   const res = await axios.get(
-    `${ncResource.baseUrl}/remote.php/dav/files/${userId}/${path}`,
+    `${ncResource.baseUrl}/remote.php/dav/files/${userId || ncResource.username}/${path}`,
     {
       auth: {
         username: userId || ncResource.username,
@@ -37,4 +37,3 @@ export async function main(
   }
   return res.data
 }
-
