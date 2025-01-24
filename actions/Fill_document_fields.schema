@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+      "ncResource": {
+          "description": "",
+          "type": "object",
+          "format": "resource-nextcloud",
+          "default": null
+      },
+      "userId": {
+          "description": "",
+          "type": "string",
+          "originalType": "string",
+          "default": null
+      },
+      "templateFileId": {
+          "description": "",
+          "type": "number",
+          "default": null
+      },
+      "destination": {
+          "description": "",
+          "type": "string",
+          "originalType": "string",
+          "default": null
+      },
+      "fields": {
+          "description": "",
+          "type": "object",
+          "properties": {},
+          "default": null
+      },
+      "convertToPdf": {
+          "description": "",
+          "type": "boolean",
+          "default": false
+      },
+      "useAppApiAuth": {
+          "description": "",
+          "type": "boolean",
+          "default": false
+      }
+  },
+  "required": [
+      "ncResource",
+      "templateFileId",
+      "destination",
+      "fields"
+  ],
+  "type": "object"
+}
