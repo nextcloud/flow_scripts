@@ -1,18 +1,19 @@
-import * as wmill from "windmill-client@1";
+import * as wmill from "windmill-client";
 import axios from "axios";
 
-// fill the type, or use the +Resource type to get a type-safe reference to a resource
-// type Postgresql = object
+type Nextcloud = {
+  baseUrl: string,
+  password: string,
+  username: string
+};
 
 export async function main(
-  nextcloudResource: string,
+  ncResource: Nextcloud,
   userId: string | null = null,
   path: string,
   useAppApiAuth: boolean = false,
 ) {
-  const ncResource = await wmill.getResource(
-    nextcloudResource,
-  );
+
   const res = await axios.get(
     `${ncResource.baseUrl}/remote.php/dav/files/${userId || ncResource.username}/${path}`,
     {
@@ -22,9 +23,9 @@ export async function main(
       },
       ...(useAppApiAuth && ({
         headers: {
-          "AA-VERSION": "2.3.0",
-          "EX-APP-ID": "flow",
-          "EX-APP-VERSION": "1.0.0",
+          "AA-VERSION": ncResource.aa_version,
+          "EX-APP-ID": ncResource.app_id,
+          "EX-APP-VERSION": ncResource.app_version,
           "AUTHORIZATION-APP-API": btoa(
             `${userId || ncResource.username}:${ncResource.password}`,
           ),
