@@ -1,0 +1,35 @@
+
+
+{
+    "type": "object",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "ncResource",
+        "groupId"
+    ],
+    "properties": {
+        "userId": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "groupId": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "ncResource": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "description": ""
+        },
+        "useAppApiAuth": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        }
+    }
+}
