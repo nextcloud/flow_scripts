@@ -17,7 +17,12 @@ export async function main(
   ncResource: Nextcloud,
   userId: string | null = null,
   folderName: string,
-  groups: string,
+  groups: Array<{
+    id: string,
+    key: string,
+    type: number,
+    displayName: string,
+  }>,
   quota: number,
   useAppApiAuth: boolean = false,
 ) {
