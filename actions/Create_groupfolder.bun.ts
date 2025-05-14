@@ -1,3 +1,9 @@
+/*
+ * We expect that the group comes from a Nextcloud Table where you can
+ * define a datatype "Users and groups". The result is a list of groups,
+ * each list item consist of the fields "id", "type" and "displayName". 
+ * This script uses the "id" value of each list item.
+ */
 import * as wmill from "windmill-client";
 import createClient, { type Middleware } from "openapi-fetch";
 
@@ -11,7 +17,12 @@ export async function main(
   ncResource: Nextcloud,
   userId: string | null = null,
   folderName: string,
-  groupName: string,
+  groups: Array<{
+    id: string,
+    key: string,
+    type: number,
+    displayName: string,
+  }>,
   quota: number,
   useAppApiAuth: boolean = false,
 ) {
@@ -53,22 +64,24 @@ export async function main(
 
     const tableId = resp.data.ocs.data.id;
 
-    await client.POST("/index.php/apps/groupfolders/folders/{id}/groups", {
-      params: {
-        header: {
-          "OCS-APIRequest": true,
-        },
-        query: {
-          format: "json",
-        },
-        path: {
-          id: tableId,
-        }
-      },
-      body: {
-        group: groupName
-      },
-    });
+    for (const group of groups) {
+        await client.POST("/index.php/apps/groupfolders/folders/{id}/groups", {
+          params: {
+            header: {
+              "OCS-APIRequest": true,
+            },
+            query: {
+              format: "json",
+            },
+            path: {
+              id: tableId,
+            }
+          },
+          body: {
+            group: group.id
+          },
+        });
+    }
 
     await client.POST("/index.php/apps/groupfolders/folders/{id}/quota", {
       params: {
