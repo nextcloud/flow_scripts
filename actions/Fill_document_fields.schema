@@ -1,51 +1,96 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "properties": {
-      "ncResource": {
-          "description": "",
-          "type": "object",
-          "format": "resource-nextcloud",
-          "default": null
-      },
-      "userId": {
-          "description": "",
-          "type": "string",
-          "originalType": "string",
-          "default": null
-      },
-      "templateFileId": {
-          "description": "",
-          "type": "number",
-          "default": null
-      },
-      "destination": {
-          "description": "",
-          "type": "string",
-          "originalType": "string",
-          "default": null
-      },
-      "fields": {
-          "description": "",
-          "type": "object",
-          "properties": {},
-          "default": null
-      },
-      "convertToPdf": {
-          "description": "",
-          "type": "boolean",
-          "default": false
-      },
-      "useAppApiAuth": {
-          "description": "",
-          "type": "boolean",
-          "default": false
-      }
-  },
-  "required": [
-      "ncResource",
-      "templateFileId",
-      "destination",
-      "fields"
-  ],
-  "type": "object"
+    "type": "object",
+    "order": [
+        "ncResource",
+        "userId",
+        "templateFileId",
+        "formFieldValue",
+        "destination",
+        "fields",
+        "convertToPdf",
+        "useAppApiAuth"
+    ],
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "ncResource",
+        "templateFileId",
+        "formFieldValue",
+        "destination",
+        "fields"
+    ],
+    "properties": {
+        "fields": {
+            "type": "object",
+            "order": [],
+            "title": "Form Fields to fill",
+            "default": null,
+            "properties": {},
+            "description": ""
+        },
+        "userId": {
+            "type": "string",
+            "title": "Username",
+            "default": null,
+            "password": false,
+            "description": "",
+            "originalType": "string",
+            "disableCreate": false,
+            "disableVariablePicker": false
+        },
+        "ncResource": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "description": ""
+        },
+        "destination": {
+            "type": "string",
+            "title": "Destination",
+            "default": null,
+            "password": false,
+            "description": "",
+            "originalType": "string",
+            "disableCreate": false,
+            "disableVariablePicker": false
+        },
+        "convertToPdf": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        },
+        "useAppApiAuth": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        },
+        "formFieldValue": {
+            "enum": [
+                "id",
+                "tag",
+                "index",
+                "title"
+            ],
+            "type": "string",
+            "title": "Form identifier",
+            "format": "date-time",
+            "default": null,
+            "password": false,
+            "enumLabels": {
+                "id": "ID",
+                "tag": "Tag",
+                "index": "Index",
+                "title": "Title"
+            },
+            "description": "",
+            "originalType": "string",
+            "disableCreate": true,
+            "disableVariablePicker": false
+        },
+        "templateFileId": {
+            "type": "number",
+            "title": "Template ID",
+            "default": null,
+            "description": ""
+        }
+    }
 }

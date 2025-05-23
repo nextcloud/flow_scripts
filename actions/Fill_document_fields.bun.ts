@@ -11,19 +11,28 @@ export async function main(
   ncResource: Nextcloud,
   userId: string|null = null,
   templateFileId: number,
+  formFieldValue: string, 
   destination: string, 
-  fields: object,
+  fields: { [index: string]: string },
   convertToPdf: boolean = false,
   useAppApiAuth: boolean = false,
 ) {
 
-  const data = {
-    fields: Object.keys(fields).reduce((carry: object, key: string) => {
-      carry['ContentControls.ByIndex.' + key] = { content: fields[key] }
-      return carry
-    }, {}),
-    destination,
+  let data: any = { fields: {}, destination };
+
+  const selectors: { [index: string]: string } = {
+    id: 'ById',
+    title: 'ByAlias',
+    index: 'ByIndex',
+    tag: 'ByTag',
   }
+  const selector: string = selectors[formFieldValue] ?? 'ById'
+  console.debug('SELECTOR ----', selector)
+  data.fields = Object.keys(fields).reduce((carry: { [index: string]: object }, key: string) => {
+    carry['ContentControls.' + selector + '.' + key] = { content: fields[key] }
+    return carry
+  }, {});
+  
   if (convertToPdf) {
     data.convert = 'pdf'
   }
