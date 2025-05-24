@@ -4,19 +4,9 @@
  * License: MIT
  */
 import * as wmill from "windmill-client";
-import createClient, { type Middleware } from "openapi-fetch";
-
-type Nextcloud = {
-  baseUrl: string,
-  password: string,
-  username: string
-};
 
 export async function main(
-  ncResource: Nextcloud,
-  userId: string | null = null,
   HumanReadableSize: number,
-  useAppApiAuth: boolean = false,
 ) {
 
 var validAmount  = function(n) {
