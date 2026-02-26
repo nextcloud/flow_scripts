@@ -1,47 +1,36 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "properties": {
-        "nextcloud": {
+        "Nextcloud": {
             "default": null,
             "description": "",
             "format": "resource-nextcloud",
             "type": "object"
         },
-        "templateFileId": {
-            "default": null,
-            "description": "",
-            "type": "number"
-        },
-        "formFieldValue": {
+        "calendarName": {
             "default": null,
             "description": "",
             "originalType": "string",
             "type": "string"
         },
-        "destination": {
+        "event_start": {
             "default": null,
             "description": "",
-            "originalType": "string",
+            "format": "date-time",
             "type": "string"
         },
-        "fields": {
+        "event_end": {
             "default": null,
             "description": "",
-            "properties": {},
-            "type": "object"
-        },
-        "convertToPdf": {
-            "default": false,
-            "description": "",
-            "type": "boolean"
+            "format": "date-time",
+            "type": "string"
         }
     },
     "required": [
-        "nextcloud",
-        "templateFileId",
-        "formFieldValue",
-        "destination",
-        "fields"
+        "Nextcloud",
+        "calendarName",
+        "event_start",
+        "event_end"
     ],
     "type": "object"
 }

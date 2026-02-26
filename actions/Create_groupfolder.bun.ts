@@ -4,18 +4,10 @@
  * each list item consist of the fields "id", "type" and "displayName". 
  * This script uses the "id" value of each list item.
  */
-import * as wmill from "windmill-client";
 import createClient, { type Middleware } from "openapi-fetch";
 
-type Nextcloud = {
-  baseUrl: string,
-  password: string,
-  username: string
-};
-
 export async function main(
-  ncResource: Nextcloud,
-  userId: string | null = null,
+  nextcloud: RT.Nextcloud,
   folderName: string,
   groups: Array<{
     id: string,
@@ -24,23 +16,14 @@ export async function main(
     displayName: string,
   }>,
   quota: number,
-  useAppApiAuth: boolean = false,
 ) {
 
-  const client = createClient<paths>({ baseUrl: ncResource.baseUrl });
+  const client = createClient<paths>({ baseUrl: nextcloud.baseUrl });
   const authMiddleware: Middleware = {
     async onRequest({ request, options }) {
       // fetch token, if it doesn’t exist
       // add Authorization header to every request
-      request.headers.set("Authorization", `Basic ${btoa(ncResource.username + ':' + ncResource.password)}`);
-      if (useAppApiAuth) {
-        request.headers.set("AA-VERSION", ncResource.aa_version,);
-        request.headers.set("EX-APP-ID", ncResource.app_id,);
-        request.headers.set("EX-APP-VERSION", ncResource.app_version,);
-        request.headers.set("AUTHORIZATION-APP-API", btoa(
-          `${userId || ncResource.username}:${ncResource.password}`,
-        ));
-      }
+      request.headers.set("Authorization", `Basic ${btoa(nextcloud.userId + ':' + nextcloud.token)}`);
       return request;
     },
   };
