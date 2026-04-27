@@ -1,22 +1,15 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "properties": {
-        "nextcloud": {
+        "Nextcloud": {
             "default": null,
             "description": "",
             "format": "resource-nextcloud",
             "type": "object"
-        },
-        "taskId": {
-            "default": null,
-            "description": "",
-            "originalType": "string",
-            "type": "string"
         }
     },
     "required": [
-        "nextcloud",
-        "taskId"
+        "Nextcloud"
     ],
     "type": "object"
 }

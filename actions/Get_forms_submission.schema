@@ -1,41 +1,28 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "properties": {
-      "ncResource": {
-          "default": null,
-          "description": "",
-          "format": "resource-nextcloud",
-          "type": "object"
-      },
-      "userId": {
-          "default": null,
-          "description": "",
-          "originalType": "string",
-          "type": "string"
-      },
-      "formId": {
-          "default": null,
-          "description": "",
-          "originalType": "string",
-          "type": "string"
-      },
-      "submissionId": {
-          "default": null,
-          "description": "",
-          "format": "",
-          "type": "number"
-      },
-      "useAppApiAuth": {
-          "default": false,
-          "description": "",
-          "format": "",
-          "type": "boolean"
-      }
-  },
-  "required": [
-      "ncResource",
-      "formId",
-      "submissionId"
-  ],
-  "type": "object"
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "properties": {
+        "nextcloud": {
+            "default": null,
+            "description": "",
+            "format": "resource-nextcloud",
+            "type": "object"
+        },
+        "formId": {
+            "default": null,
+            "description": "",
+            "originalType": "string",
+            "type": "string"
+        },
+        "submissionId": {
+            "default": null,
+            "description": "",
+            "type": "number"
+        }
+    },
+    "required": [
+        "nextcloud",
+        "formId",
+        "submissionId"
+    ],
+    "type": "object"
 }

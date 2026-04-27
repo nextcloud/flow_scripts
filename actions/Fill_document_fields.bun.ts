@@ -1,21 +1,12 @@
-import * as wmill from "windmill-client"
 import axios from "axios"
 
-type Nextcloud = {
-  baseUrl: string,
-  password: string,
-  username: string
-};
-
 export async function main(
-  ncResource: Nextcloud,
-  userId: string|null = null,
+  nextcloud: RT.Nextcloud,
   templateFileId: number,
   formFieldValue: string, 
   destination: string, 
   fields: { [index: string]: string },
   convertToPdf: boolean = false,
-  useAppApiAuth: boolean = false,
 ) {
 
   let data: any = { fields: {}, destination };
@@ -39,25 +30,15 @@ export async function main(
   
   console.debug('data', data)
 
-  const url = ncResource.baseUrl + '/ocs/v2.php/apps/richdocuments/api/v1/template/fields/fill/' + templateFileId
+  const url = nextcloud.baseUrl + '/ocs/v2.php/apps/richdocuments/api/v1/template/fields/fill/' + templateFileId
   const config = {
-    ...(!useAppApiAuth && ({
-      auth: {
-        username: ncResource.username,
-        password: ncResource.password,
-      },
-    })),
+    auth: {
+      username: nextcloud.userId,
+      password: nextcloud.token,
+    },
     headers: {
       'content-type': 'application/json',
       'ocs-apirequest': true,
-      ...(useAppApiAuth && ({
-        "AA-VERSION": ncResource.aa_version,
-        "EX-APP-ID": ncResource.app_id,
-        "EX-APP-VERSION": ncResource.app_version,
-        "AUTHORIZATION-APP-API": btoa(
-          `${userId || ncResource.username}:${ncResource.password}`,
-        ),
-    })),
     },
   }
   console.debug('config', config)

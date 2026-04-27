@@ -1,46 +1,35 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "properties": {
-      "ncResource": {
-          "default": null,
-          "description": "",
-          "format": "resource-nextcloud",
-          "type": "object"
-      },
-      "userId": {
-          "default": null,
-          "description": "",
-          "originalType": "string",
-          "type": "string"
-      },
-      "folderName": {
-          "default": null,
-          "description": "",
-          "originalType": "string",
-          "type": "string"
-      },
-      "groupName": {
-          "default": null,
-          "description": "",
-          "originalType": "string",
-          "type": "string"
-      },
-      "quota": {
-          "default": null,
-          "description": "",
-          "type": "number"
-      },
-      "useAppApiAuth": {
-          "default": false,
-          "description": "",
-          "type": "boolean"
-      }
-  },
-  "required": [
-      "ncResource",
-      "folderName",
-      "groupName",
-      "quota"
-  ],
-  "type": "object"
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "properties": {
+        "nextcloud": {
+            "default": null,
+            "description": "",
+            "format": "resource-nextcloud",
+            "type": "object"
+        },
+        "folderName": {
+            "default": null,
+            "description": "",
+            "originalType": "string",
+            "type": "string"
+        },
+        "groups": {
+            "default": null,
+            "description": "",
+            "format": "resource-array",
+            "type": "object"
+        },
+        "quota": {
+            "default": null,
+            "description": "",
+            "type": "number"
+        }
+    },
+    "required": [
+        "nextcloud",
+        "folderName",
+        "groups",
+        "quota"
+    ],
+    "type": "object"
 }

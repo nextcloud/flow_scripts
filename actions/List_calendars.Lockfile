@@ -1,0 +1,21 @@
+# py: 3.12
+caldav==2.2.6
+charset-normalizer==3.4.4
+click==8.3.1
+dnspython==2.8.0
+h11==0.16.0
+icalendar==7.0.2
+icalendar-searcher==1.0.5
+jh2==5.0.10
+lxml==6.0.2
+niquests==3.17.0
+python-dateutil==2.9.0.post0
+pyyaml==6.0.3
+qh3==1.5.6
+recurring-ical-events==3.8.1
+six==1.17.0
+typing-extensions==4.15.0
+tzdata==2025.3
+urllib3-future==2.16.900
+wassima==2.0.5
+x-wr-timezone==2.0.1

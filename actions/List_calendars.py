@@ -8,22 +8,13 @@ import base64
 nextcloud = dict
 
 
-def main(NextcloudResource: nextcloud, userId: str, useAppApiAuth: bool = False):
-    if useAppApiAuth:
-        headers = {
-            "AA-VERSION": "2.3.0",
-            "EX-APP-ID": "flow",
-            "EX-APP-VERSION": "1.0.0",
-            "AUTHORIZATION-APP-API": base64.b64encode(
-              f"{userId}:{NextcloudResource['password']}".encode('utf-8')).decode('utf-8'),
-          }
-    else:
-        headers = {}
+def main(Nextcloud: nextcloud):
+    headers = {}
 
     with caldav.DAVClient(
-        url=NextcloudResource['baseUrl'] + '/remote.php/dav/calendars/'+userId+'/',
-        username=userId,
-        password=NextcloudResource['password'],
+        url=Nextcloud['baseUrl'] + '/remote.php/dav/calendars/'+ Nextcloud['userId'] +'/',
+        username=Nextcloud['userId'],
+        password=Nextcloud['token'],
         headers=headers,
     ) as client:
         my_principal = client.principal()
