@@ -1,0 +1,500 @@
+{
+    "summary": "Form to Table",
+    "description": "Checks an uploaded form if all fields are filled, then adds a table row for this form and asks a manager for approval. Approved forms generate a calendar entry\n\n - trigger: PDF uploaded in an \"Uploads\"  folder\n - check if everything needed is filled\n - fill a table with the info\n - get approval of the Room Manager (1 pre-programmed person)\n - generate a calendar invite (invite form filler's mail address)\n - mark all AI generated content as such",
+    "value": {
+        "notes": [
+            {
+                "id": "note-sz0c3rhct2jzfgyeqkmwb",
+                "text": "Removes approval link and sets status",
+                "type": "group",
+                "color": "blue",
+                "locked": false,
+                "contained_node_ids": [
+                    "roy",
+                    "roz"
+                ]
+            }
+        ],
+        "modules": [
+            {
+                "id": "filepath",
+                "value": {
+                    "path": "hub/28172/nextcloud/path_from_fileid",
+                    "type": "script",
+                    "is_trigger": false,
+                    "input_transforms": {
+                        "fileid": {
+                            "expr": "flow_input.event.node.id",
+                            "type": "javascript"
+                        },
+                        "ncResource": {
+                            "expr": "flow_input.authentication.owner",
+                            "type": "javascript"
+                        }
+                    }
+                },
+                "summary": "Path from Fileid (nextcloud)"
+            },
+            {
+                "id": "form",
+                "value": {
+                    "lock": "{\n  \"dependencies\": {\n    \"axios\": \"latest\",\n    \"dommatrix\": \"latest\",\n    \"pdfjs-dist\": \"latest\"\n  }\n}\n//bun.lock\n{\n  \"lockfileVersion\": 1,\n  \"configVersion\": 1,\n  \"workspaces\": {\n    \"\": {\n      \"dependencies\": {\n        \"axios\": \"latest\",\n        \"dommatrix\": \"latest\",\n        \"pdfjs-dist\": \"latest\",\n      },\n    },\n  },\n  \"packages\": {\n    \"@napi-rs/canvas\": [\"@napi-rs/canvas@0.1.99\", \"\", { \"optionalDependencies\": { \"@napi-rs/canvas-android-arm64\": \"0.1.99\", \"@napi-rs/canvas-darwin-arm64\": \"0.1.99\", \"@napi-rs/canvas-darwin-x64\": \"0.1.99\", \"@napi-rs/canvas-linux-arm-gnueabihf\": \"0.1.99\", \"@napi-rs/canvas-linux-arm64-gnu\": \"0.1.99\", \"@napi-rs/canvas-linux-arm64-musl\": \"0.1.99\", \"@napi-rs/canvas-linux-riscv64-gnu\": \"0.1.99\", \"@napi-rs/canvas-linux-x64-gnu\": \"0.1.99\", \"@napi-rs/canvas-linux-x64-musl\": \"0.1.99\", \"@napi-rs/canvas-win32-arm64-msvc\": \"0.1.99\", \"@napi-rs/canvas-win32-x64-msvc\": \"0.1.99\" } }, \"sha512-zN4eQlK3eBf7aJBcTHZilpBH3tDekBzPMIWC8r0s94Ecl73XfOyFi4w7yKFMRVUT0lvNQjtOL8YSrwqQj6mZFg==\"],\n\n    \"@napi-rs/canvas-android-arm64\": [\"@napi-rs/canvas-android-arm64@0.1.99\", \"\", { \"os\": \"android\", \"cpu\": \"arm64\" }, \"sha512-9OCRt8VVxA17m32NWZKyNC2qamdaS/SC5CEOIQwFngRq0DIeVm4PDal+6Ljnhqm2whZiC63DNuKZ4xSp2nbj9w==\"],\n\n    \"@napi-rs/canvas-darwin-arm64\": [\"@napi-rs/canvas-darwin-arm64@0.1.99\", \"\", { \"os\": \"darwin\", \"cpu\": \"arm64\" }, \"sha512-lupMDMy1+H38dhyCcLirOKKVUyzzlxi7j7rGPLI3vViMHOoPjcXO1b10ivy+ad+q6MiwHfoLjKTCoLke5ySOBg==\"],\n\n    \"@napi-rs/canvas-darwin-x64\": [\"@napi-rs/canvas-darwin-x64@0.1.99\", \"\", { \"os\": \"darwin\", \"cpu\": \"x64\" }, \"sha512-fdz02t4w8n6Ii/rYhWig6STb/zcTmCC/6YZTGmjoDeidDwn9Wf0ukQVynhCPEs29vqUc66wHZKsuIgMs9tycCg==\"],\n\n    \"@napi-rs/canvas-linux-arm-gnueabihf\": [\"@napi-rs/canvas-linux-arm-gnueabihf@0.1.99\", \"\", { \"os\": \"linux\", \"cpu\": \"arm\" }, \"sha512-w4FwVwlNo00ezeRhfY62IVIyt6G3u8wodkPtiqWc52BUHx+VDBUM2vkS3ogfANaLI7hnf3s6WK4LyZVUjBg1lA==\"],\n\n    \"@napi-rs/canvas-linux-arm64-gnu\": [\"@napi-rs/canvas-linux-arm64-gnu@0.1.99\", \"\", { \"os\": \"linux\", \"cpu\": \"arm64\" }, \"sha512-8JvHeexKQ8c7g0q7YJ29NVQwnf1ePghP9ys9ZN0R0qzyqJQ9Uw6N9qnDINArlm3IYHexB7LjzArIfhQiqSDGvQ==\"],\n\n    \"@napi-rs/canvas-linux-arm64-musl\": [\"@napi-rs/canvas-linux-arm64-musl@0.1.99\", \"\", { \"os\": \"linux\", \"cpu\": \"arm64\" }, \"sha512-Z+6nyLdJXWzLPVxi4H6g9TJop4DwN3KSgHWto5JCbZV5/uKoVqcSynPs0tGlUHOoWI8S8tEvJspz51GQkvr07w==\"],\n\n    \"@napi-rs/canvas-linux-riscv64-gnu\": [\"@napi-rs/canvas-linux-riscv64-gnu@0.1.99\", \"\", { \"os\": \"linux\", \"cpu\": \"none\" }, \"sha512-jAnfOUv4IO1l8Levk5t85oVtEBOXLa07KnIUgWo1CDlPxiqpxS3uBfiE38Lvj/CQgHaNF6Nxk/SaemwLgsVJgw==\"],\n\n    \"@napi-rs/canvas-linux-x64-gnu\": [\"@napi-rs/canvas-linux-x64-gnu@0.1.99\", \"\", { \"os\": \"linux\", \"cpu\": \"x64\" }, \"sha512-mIkXw3fGmbYyFjSmfWEvty4jN+rwEOmv0+Dy9bRvvTzLYWCgm3RMgUEQVfAKFw96nIRFnyNZiK83KNQaVVFjng==\"],\n\n    \"@napi-rs/canvas-linux-x64-musl\": [\"@napi-rs/canvas-linux-x64-musl@0.1.99\", \"\", { \"os\": \"linux\", \"cpu\": \"x64\" }, \"sha512-f3Uz2P0RgrtBHISxZqr6yiYXJlTDyCVBumDacxo+4AmSg7z0HiqYZKGWC/gszq3fbPhyQUya1W2AEteKxT9Y6A==\"],\n\n    \"@napi-rs/canvas-win32-arm64-msvc\": [\"@napi-rs/canvas-win32-arm64-msvc@0.1.99\", \"\", { \"os\": \"win32\", \"cpu\": \"arm64\" }, \"sha512-XE6KUkfqRsCNejcoRMiMr3RaUeObxNf6y7dut3hrq2rn7PzfRTZgrjF1F/B2C7FcdgqY/vSHWpQeMuNz1vTNHg==\"],\n\n    \"@napi-rs/canvas-win32-x64-msvc\": [\"@napi-rs/canvas-win32-x64-msvc@0.1.99\", \"\", { \"os\": \"win32\", \"cpu\": \"x64\" }, \"sha512-plMYGVbc/vmmPF9MtmHbwNk1rL1Aj53vQZt+Gnv1oZn6gmd9jEHHJ0n9Nd2nxa5sKH7TS5IjkCDM6289O0d6PQ==\"],\n\n    \"asynckit\": [\"asynckit@0.4.0\", \"\", {}, \"sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==\"],\n\n    \"axios\": [\"axios@1.15.2\", \"\", { \"dependencies\": { \"follow-redirects\": \"^1.15.11\", \"form-data\": \"^4.0.5\", \"proxy-from-env\": \"^2.1.0\" } }, \"sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==\"],\n\n    \"call-bind-apply-helpers\": [\"call-bind-apply-helpers@1.0.2\", \"\", { \"dependencies\": { \"es-errors\": \"^1.3.0\", \"function-bind\": \"^1.1.2\" } }, \"sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==\"],\n\n    \"combined-stream\": [\"combined-stream@1.0.8\", \"\", { \"dependencies\": { \"delayed-stream\": \"~1.0.0\" } }, \"sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==\"],\n\n    \"delayed-stream\": [\"delayed-stream@1.0.0\", \"\", {}, \"sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==\"],\n\n    \"dommatrix\": [\"dommatrix@1.0.3\", \"\", {}, \"sha512-l32Xp/TLgWb8ReqbVJAFIvXmY7go4nTxxlWiAFyhoQw9RKEOHBZNnyGvJWqDVSPmq3Y9HlM4npqF/T6VMOXhww==\"],\n\n    \"dunder-proto\": [\"dunder-proto@1.0.1\", \"\", { \"dependencies\": { \"call-bind-apply-helpers\": \"^1.0.1\", \"es-errors\": \"^1.3.0\", \"gopd\": \"^1.2.0\" } }, \"sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==\"],\n\n    \"es-define-property\": [\"es-define-property@1.0.1\", \"\", {}, \"sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==\"],\n\n    \"es-errors\": [\"es-errors@1.3.0\", \"\", {}, \"sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==\"],\n\n    \"es-object-atoms\": [\"es-object-atoms@1.1.1\", \"\", { \"dependencies\": { \"es-errors\": \"^1.3.0\" } }, \"sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==\"],\n\n    \"es-set-tostringtag\": [\"es-set-tostringtag@2.1.0\", \"\", { \"dependencies\": { \"es-errors\": \"^1.3.0\", \"get-intrinsic\": \"^1.2.6\", \"has-tostringtag\": \"^1.0.2\", \"hasown\": \"^2.0.2\" } }, \"sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==\"],\n\n    \"follow-redirects\": [\"follow-redirects@1.16.0\", \"\", {}, \"sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==\"],\n\n    \"form-data\": [\"form-data@4.0.5\", \"\", { \"dependencies\": { \"asynckit\": \"^0.4.0\", \"combined-stream\": \"^1.0.8\", \"es-set-tostringtag\": \"^2.1.0\", \"hasown\": \"^2.0.2\", \"mime-types\": \"^2.1.12\" } }, \"sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==\"],\n\n    \"function-bind\": [\"function-bind@1.1.2\", \"\", {}, \"sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==\"],\n\n    \"get-intrinsic\": [\"get-intrinsic@1.3.0\", \"\", { \"dependencies\": { \"call-bind-apply-helpers\": \"^1.0.2\", \"es-define-property\": \"^1.0.1\", \"es-errors\": \"^1.3.0\", \"es-object-atoms\": \"^1.1.1\", \"function-bind\": \"^1.1.2\", \"get-proto\": \"^1.0.1\", \"gopd\": \"^1.2.0\", \"has-symbols\": \"^1.1.0\", \"hasown\": \"^2.0.2\", \"math-intrinsics\": \"^1.1.0\" } }, \"sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==\"],\n\n    \"get-proto\": [\"get-proto@1.0.1\", \"\", { \"dependencies\": { \"dunder-proto\": \"^1.0.1\", \"es-object-atoms\": \"^1.0.0\" } }, \"sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==\"],\n\n    \"gopd\": [\"gopd@1.2.0\", \"\", {}, \"sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==\"],\n\n    \"has-symbols\": [\"has-symbols@1.1.0\", \"\", {}, \"sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==\"],\n\n    \"has-tostringtag\": [\"has-tostringtag@1.0.2\", \"\", { \"dependencies\": { \"has-symbols\": \"^1.0.3\" } }, \"sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==\"],\n\n    \"hasown\": [\"hasown@2.0.3\", \"\", { \"dependencies\": { \"function-bind\": \"^1.1.2\" } }, \"sha512-ej4AhfhfL2Q2zpMmLo7U1Uv9+PyhIZpgQLGT1F9miIGmiCJIoCgSmczFdrc97mWT4kVY72KA+WnnhJ5pghSvSg==\"],\n\n    \"math-intrinsics\": [\"math-intrinsics@1.1.0\", \"\", {}, \"sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==\"],\n\n    \"mime-db\": [\"mime-db@1.52.0\", \"\", {}, \"sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==\"],\n\n    \"mime-types\": [\"mime-types@2.1.35\", \"\", { \"dependencies\": { \"mime-db\": \"1.52.0\" } }, \"sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==\"],\n\n    \"node-readable-to-web-readable-stream\": [\"node-readable-to-web-readable-stream@0.4.2\", \"\", {}, \"sha512-/cMZNI34v//jUTrI+UIo4ieHAB5EZRY/+7OmXZgBxaWBMcW2tGdceIw06RFxWxrKZ5Jp3sI2i5TsRo+CBhtVLQ==\"],\n\n    \"pdfjs-dist\": [\"pdfjs-dist@5.6.205\", \"\", { \"optionalDependencies\": { \"@napi-rs/canvas\": \"^0.1.96\", \"node-readable-to-web-readable-stream\": \"^0.4.2\" } }, \"sha512-tlUj+2IDa7G1SbvBNN74UHRLJybZDWYom+k6p5KIZl7huBvsA4APi6mKL+zCxd3tLjN5hOOEE9Tv7VdzO88pfg==\"],\n\n    \"proxy-from-env\": [\"proxy-from-env@2.1.0\", \"\", {}, \"sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==\"],\n  }\n}\n",
+                    "type": "rawscript",
+                    "content": "import axios from \"axios\";\nimport { createRequire } from \"node:module\";\nimport { pathToFileURL } from \"node:url\";\n\ntype FieldValue = string | boolean | null;\n\ntype FieldKind = \"text\" | \"checkbox\" | \"other\";\n\nfunction trimStr(v: unknown): string {\n  return String(v ?? \"\").trim();\n}\n\n/** True if the field has a value that counts as “filled” for PDF-required validation. */\nfunction isFilled(value: FieldValue, kind: FieldKind): boolean {\n  if (kind === \"checkbox\") return value === true || value === false;\n  if (kind === \"text\") {\n    return typeof value === \"string\" && value.trim().length > 0;\n  }\n  return value != null && String(value).trim().length > 0;\n}\n\ntype WidgetAnnotation = {\n  fieldName?: string;\n  fieldValue?: string | null;\n  fieldType?: string;\n  checkBox?: boolean;\n  required?: boolean;\n  fieldFlags?: number;\n};\n\nconst FIELD_FLAG_REQUIRED = 2;\n\nfunction isAnnotationRequired(a: WidgetAnnotation): boolean {\n  if (typeof a.required === \"boolean\") return a.required;\n  const ff = a.fieldFlags;\n  return typeof ff === \"number\" && (ff & FIELD_FLAG_REQUIRED) !== 0;\n}\n\nfunction kindFromAnnotation(a: WidgetAnnotation): FieldKind {\n  const ft = a.fieldType;\n  if (ft === \"Tx\") return \"text\";\n  if (ft === \"Btn\") {\n    if (a.checkBox) return \"checkbox\";\n    return \"other\";\n  }\n  if (ft === \"Ch\") return \"other\";\n  return \"other\";\n}\n\nfunction valueFromAnnotation(a: WidgetAnnotation): FieldValue {\n  const ft = a.fieldType;\n  const raw = a.fieldValue;\n\n  if (ft === \"Tx\") return trimStr(raw ?? \"\");\n\n  if (ft === \"Btn\" && a.checkBox) {\n    const v = raw == null ? \"\" : String(raw);\n    if (v === \"\" || v === \"Off\") return false;\n    return true;\n  }\n  if (ft === \"Ch\") return trimStr(raw ?? \"\");\n\n  return null;\n}\n\n/** pdf.js expects browser globals; Windmill/Node workers do not provide `DOMMatrix`. */\nasync function ensureDomMatrixPolyfill(): Promise<void> {\n  if (typeof globalThis.DOMMatrix !== \"undefined\") return;\n  const mod = await import(\"dommatrix\");\n  const DM = (mod as { default?: typeof globalThis.DOMMatrix }).default ?? (mod as { DOMMatrix: typeof globalThis.DOMMatrix }).DOMMatrix;\n  if (typeof DM === \"function\") {\n    Object.defineProperty(globalThis, \"DOMMatrix\", { value: DM, configurable: true });\n  }\n}\n\n/**\n * pdf.js resolves `./pdf.worker.mjs` relative to its bundle; Bun/Windmill caches break that.\n * Point the worker at the real file in `node_modules` via `require.resolve`.\n */\nfunction setPdfWorkerSrc(GlobalWorkerOptions: { workerSrc?: string }): void {\n  const require = createRequire(import.meta.url);\n  for (const id of [\n    \"pdfjs-dist/legacy/build/pdf.worker.mjs\",\n    \"pdfjs-dist/build/pdf.worker.mjs\",\n  ]) {\n    try {\n      GlobalWorkerOptions.workerSrc = pathToFileURL(require.resolve(id)).href;\n      return;\n    } catch {\n      /* try next */\n    }\n  }\n}\n\nasync function loadFormData(\n  pdfBytes: Uint8Array,\n  password: string,\n): Promise<{\n  values: Record<string, FieldValue>;\n  kinds: Record<string, FieldKind>;\n  available_fields: string[];\n  required_fields: string[];\n}> {\n  await ensureDomMatrixPolyfill();\n  const pdfjs = await import(\"pdfjs-dist/legacy/build/pdf.mjs\");\n  setPdfWorkerSrc(pdfjs.GlobalWorkerOptions);\n  const { getDocument } = pdfjs;\n\n  const loadingTask = getDocument({\n    data: pdfBytes,\n    password,\n    disableRange: true,\n    disableStream: true,\n    useSystemFonts: true,\n  });\n\n  let pdf: { numPages: number; getPage: (n: number) => Promise<{ getAnnotations: () => Promise<unknown[]> }> };\n  try {\n    pdf = await loadingTask.promise;\n  } catch (e: unknown) {\n    const msg = e instanceof Error ? e.message : String(e);\n    if (/password/i.test(msg)) {\n      throw new Error(\n        \"PDF needs a password or a different one. Set `pdfPassword` or use an unencrypted PDF.\",\n      );\n    }\n    throw e;\n  }\n\n  const kinds: Record<string, FieldKind> = {};\n  const values: Record<string, FieldValue> = {};\n  const requiredByName: Record<string, boolean> = {};\n\n  for (let p = 1; p <= pdf.numPages; p++) {\n    const page = await pdf.getPage(p);\n    const annotations = (await page.getAnnotations()) as WidgetAnnotation[];\n\n    for (const a of annotations) {\n      const name = a.fieldName?.trim();\n      if (!name) continue;\n\n      const kind = kindFromAnnotation(a);\n      const v = valueFromAnnotation(a);\n      kinds[name] = kind;\n      values[name] = v;\n\n      if (isAnnotationRequired(a)) requiredByName[name] = true;\n      else if (requiredByName[name] === undefined) requiredByName[name] = false;\n    }\n  }\n\n  const available_fields = Object.keys(values).sort();\n  const required_fields = Object.keys(requiredByName)\n    .filter((n) => requiredByName[n])\n    .sort();\n\n  return { values, kinds, available_fields, required_fields };\n}\n\nexport async function main(\n  nextcloud: RT.Nextcloud,\n  pdfPath: string,\n  pdfPassword: string | null = null,\n): Promise<{\n  values: Record<string, FieldValue>;\n  available_fields: string[];\n  required_fields: string[];\n  filled_out: boolean;\n}> {\n  const getRes = await axios.get(\n    `${String(nextcloud.baseUrl || \"\").replace(/\\/$/, \"\")}/remote.php/dav/files/${encodeURIComponent(nextcloud.userId)}/${pdfPath}`,\n    {\n      auth: {\n        username: nextcloud.userId,\n        password: nextcloud.token,\n      },\n      responseType: \"arraybuffer\",\n    },\n  );\n\n  if (getRes.status !== 200) {\n    throw new Error(`Failed to download PDF (HTTP ${getRes.status}) ${getRes.statusText}`);\n  }\n\n  const pdfBytes = new Uint8Array(getRes.data as ArrayBuffer);\n  const { values, kinds, available_fields, required_fields } = await loadFormData(\n    pdfBytes,\n    pdfPassword ?? \"\",\n  );\n\n  const filled_out = required_fields.every((name) =>\n    isFilled(values[name], kinds[name] ?? \"other\"),\n  );\n\n  return { values, available_fields, required_fields, filled_out };\n}\n",
+                    "language": "bun",
+                    "input_transforms": {
+                        "pdfPath": {
+                            "expr": "results.filepath",
+                            "type": "javascript"
+                        },
+                        "nextcloud": {
+                            "expr": "flow_input.authentication.owner",
+                            "type": "javascript"
+                        },
+                        "pdfPassword": {
+                            "type": "static",
+                            "value": ""
+                        }
+                    }
+                },
+                "summary": "Read PDF"
+            },
+            {
+                "id": "d",
+                "value": {
+                    "type": "branchone",
+                    "default": [
+                        {
+                            "id": "f",
+                            "value": {
+                                "path": "hub/28136/nextcloud/send_a_notification_to_a_user",
+                                "type": "script",
+                                "is_trigger": false,
+                                "input_transforms": {
+                                    "message": {
+                                        "type": "static",
+                                        "value": "Open {pdf}"
+                                    },
+                                    "subject": {
+                                        "type": "static",
+                                        "value": "Your latest form was filled out incorrectly"
+                                    },
+                                    "nextcloud": {
+                                        "expr": "flow_input.authentication.owner",
+                                        "type": "javascript"
+                                    },
+                                    "messageParameters": {
+                                        "expr": "({\n  \"pdf\": {\n    \"type\": \"file\",\n    \"id\": String(flow_input.event.node.id),\n    \"name\": \"PDF\",\n    \"path\": flow_input.event.node.path\n  }\n})",
+                                        "type": "javascript"
+                                    },
+                                    "subjectParameters": {
+                                        "type": "static",
+                                        "value": null
+                                    },
+                                    "notificationUserId": {
+                                        "expr": "flow_input.authentication.trigger.userId",
+                                        "type": "javascript"
+                                    }
+                                }
+                            },
+                            "summary": "Send a notification to a user (nextcloud)"
+                        }
+                    ],
+                    "branches": [
+                        {
+                            "expr": "results.form.filled_out",
+                            "modules": [
+                                {
+                                    "id": "columns",
+                                    "value": {
+                                        "path": "hub/28145/nextcloud/nextcloud_tables:_get_all_columns_of_a_table",
+                                        "type": "script",
+                                        "is_trigger": false,
+                                        "input_transforms": {
+                                            "tableId": {
+                                                "type": "static",
+                                                "value": 7
+                                            },
+                                            "nextcloud": {
+                                                "expr": "flow_input.authentication.owner",
+                                                "type": "javascript"
+                                            }
+                                        }
+                                    },
+                                    "summary": "Nextcloud Tables: Get all columns of a table (nextcloud)"
+                                },
+                                {
+                                    "id": "row",
+                                    "value": {
+                                        "lock": "{\n  \"dependencies\": {}\n}\n//bun.lock\n<empty>",
+                                        "type": "rawscript",
+                                        "content": "/**\n * Maps PDF/form field values (keyed by column title) to NocoDB-style column ids\n * from a column definition array (e.g. `result.json`).\n *\n * Skips: columns whose `title` is missing in `values`, or whose value is `null`,\n * `\"\"`, or whitespace-only string.\n */\nexport async function main(\n  columns: Array<{ id: number; title: string }>,\n  values: Record<string, string | boolean | number | null | undefined>,\n): Promise<Record<number, string | boolean | number>> {\n  const out: Record<number, string | boolean | number> = {};\n\n  for (const col of columns) {\n    if (!Object.prototype.hasOwnProperty.call(values, col.title)) continue;\n\n    const v = values[col.title];\n    if (v === null || v === undefined) continue;\n    if (typeof v === \"string\" && v.trim() === \"\") continue;\n\n    out[col.id] = v;\n  }\n\n  return out;\n}\n",
+                                        "language": "bun",
+                                        "input_transforms": {
+                                            "values": {
+                                                "expr": "results.form.values",
+                                                "type": "javascript"
+                                            },
+                                            "columns": {
+                                                "expr": "results.columns",
+                                                "type": "javascript"
+                                            }
+                                        }
+                                    },
+                                    "summary": "Mapping"
+                                },
+                                {
+                                    "id": "row_output",
+                                    "value": {
+                                        "lock": "{\n  \"dependencies\": {\n    \"openapi-fetch\": \"latest\"\n  }\n}\n//bun.lock\n{\n  \"lockfileVersion\": 1,\n  \"configVersion\": 1,\n  \"workspaces\": {\n    \"\": {\n      \"dependencies\": {\n        \"openapi-fetch\": \"latest\",\n      },\n    },\n  },\n  \"packages\": {\n    \"openapi-fetch\": [\"openapi-fetch@0.17.0\", \"\", { \"dependencies\": { \"openapi-typescript-helpers\": \"^0.1.0\" } }, \"sha512-PsbZR1wAPcG91eEthKhN+Zn92FMHxv+/faECIwjXdxfTODGSGegYv0sc1Olz+HYPvKOuoXfp+0pA2XVt2cI0Ig==\"],\n\n    \"openapi-typescript-helpers\": [\"openapi-typescript-helpers@0.1.0\", \"\", {}, \"sha512-OKTGPthhivLw/fHz6c3OPtg72vi86qaMlqbJuVJ23qOvQ+53uw1n7HdmkJFibloF7QEjDrDkzJiOJuockM/ljw==\"],\n  }\n}\n",
+                                        "path": "hub/28143/nextcloud/nextcloud_tables:_create_a_row_in_a_table",
+                                        "type": "rawscript",
+                                        "content": "import createClient, { type Middleware } from \"openapi-fetch\";\n\ninterface Data {\n  [p: number]: any\n}\n\nexport async function main(\n  nextcloud: RT.Nextcloud,\n  tableId: number,\n  data: Data,\n) {\n\n  const client = createClient<paths>({ baseUrl: nextcloud.baseUrl });\n  const authMiddleware: Middleware = {\n    async onRequest({ request, options }) {\n      // fetch token, if it doesn’t exist\n      // add Authorization header to every request\n      request.headers.set(\"Authorization\", `Basic ${btoa((nextcloud.userId) + ':' + nextcloud.token)}`);\n      return request;\n    },\n  };\n  client.use(authMiddleware);\n\n  const resp = await client.POST(\"/index.php/apps/tables/api/1/tables/{tableId}/rows\", {\n    params: {\n      header: {\n        \"OCS-APIRequest\": true,\n      },\n      query: {\n        format: \"json\",\n      },\n      path: {\n        tableId: tableId,\n      },\n\n    },\n    body: {\n      data: data\n    },\n  });\n\n  return resp;\n\n}",
+                                        "language": "bun",
+                                        "input_transforms": {
+                                            "data": {
+                                                "expr": "results.row",
+                                                "type": "javascript"
+                                            },
+                                            "tableId": {
+                                                "type": "static",
+                                                "value": 7
+                                            },
+                                            "nextcloud": {
+                                                "expr": "flow_input.authentication.owner",
+                                                "type": "javascript"
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "id": "file_for_table",
+                                    "value": {
+                                        "lock": "{\n  \"dependencies\": {}\n}\n//bun.lock\n<empty>",
+                                        "type": "rawscript",
+                                        "content": "// import * as wmill from \"windmill-client\"\n\nexport async function main(path: string, id: string) {\n  const splitPath = path.split(\"/\");\n  const title = splitPath[splitPath.length-1]\n  return {\n    \"thumbnailUrl\": \"\",\n    \"title\": title,\n    \"subline\": \"Files\",\n    \"resourceUrl\": `https://tech-preview.nextcloud.com/f/${id}`,\n    \"icon\": \"/apps/theming/img/core/filetypes/application-pdf.svg\",\n    \"rounded\": false,\n    \"attributes\": {\n      \"fileId\": String(id),\n      \"path\": path\n    },\n    \"providerId\": \"files\",\n    \"value\": `https://tech-preview.nextcloud.com/f/${id}`\n  }\n}\n",
+                                        "language": "bun",
+                                        "input_transforms": {
+                                            "id": {
+                                                "expr": "flow_input.event.node.id",
+                                                "type": "javascript"
+                                            },
+                                            "path": {
+                                                "expr": "results.filepath",
+                                                "type": "javascript"
+                                            }
+                                        }
+                                    },
+                                    "summary": "Generate Row for File"
+                                },
+                                {
+                                    "id": "rpa",
+                                    "value": {
+                                        "path": "hub/28155/nextcloud/edit_a_row_in_a_table_in_nextcloud_tables",
+                                        "type": "script",
+                                        "is_trigger": false,
+                                        "input_transforms": {
+                                            "rowId": {
+                                                "expr": "results.row_output.data.id",
+                                                "type": "javascript"
+                                            },
+                                            "value": {
+                                                "expr": "JSON.stringify(results.file_for_table)",
+                                                "type": "javascript"
+                                            },
+                                            "columnId": {
+                                                "expr": "results.columns.find(c => c.title === \"File\")?.id",
+                                                "type": "javascript"
+                                            },
+                                            "nextcloud": {
+                                                "expr": "flow_input.authentication.owner",
+                                                "type": "javascript"
+                                            }
+                                        }
+                                    },
+                                    "summary": "Edit a row in a table in Nextcloud Tables (nextcloud)"
+                                },
+                                {
+                                    "id": "approval",
+                                    "value": {
+                                        "lock": "{\n  \"dependencies\": {\n    \"openapi-fetch\": \"latest\",\n    \"windmill-client\": \"latest\"\n  }\n}\n//bun.lock\n{\n  \"lockfileVersion\": 1,\n  \"configVersion\": 1,\n  \"workspaces\": {\n    \"\": {\n      \"dependencies\": {\n        \"openapi-fetch\": \"latest\",\n        \"windmill-client\": \"latest\",\n      },\n    },\n  },\n  \"packages\": {\n    \"openapi-fetch\": [\"openapi-fetch@0.17.0\", \"\", { \"dependencies\": { \"openapi-typescript-helpers\": \"^0.1.0\" } }, \"sha512-PsbZR1wAPcG91eEthKhN+Zn92FMHxv+/faECIwjXdxfTODGSGegYv0sc1Olz+HYPvKOuoXfp+0pA2XVt2cI0Ig==\"],\n\n    \"openapi-typescript-helpers\": [\"openapi-typescript-helpers@0.1.0\", \"\", {}, \"sha512-OKTGPthhivLw/fHz6c3OPtg72vi86qaMlqbJuVJ23qOvQ+53uw1n7HdmkJFibloF7QEjDrDkzJiOJuockM/ljw==\"],\n\n    \"windmill-client\": [\"windmill-client@1.690.0\", \"\", {}, \"sha512-uuUWq7+ZSiFcyN7f96LHTnKhbYyNCv7XSleJZkYLHmuIEnZQbcjJuEpaTk2bUHu7EfCBzsL9ahZP6DjI55UvOw==\"],\n  }\n}\n",
+                                        "path": "hub/28155/nextcloud/edit_a_row_in_a_table_in_nextcloud_tables",
+                                        "type": "rawscript",
+                                        "content": "import createClient, { type Middleware } from \"openapi-fetch\";\nimport * as wmill from \"windmill-client\";\n\nexport async function main(\n  nextcloud: RT.Nextcloud,\n  rowId: number,\n  columnId: number,\n  description: string,\n) {\n\n  const client = createClient<paths>({ baseUrl: nextcloud.baseUrl });\n  const authMiddleware: Middleware = {\n    async onRequest({ request, options }) {\n      // fetch token, if it doesn’t exist\n      // add Authorization header to every request\n      request.headers.set(\"Authorization\", `Basic ${btoa((nextcloud.userId) + ':' + nextcloud.token)}`);\n      return request;\n    },\n  };\n\n  client.use(authMiddleware);\n  \n  \n  const { approvalPage, resume, cancel } = await wmill.getResumeUrls(\"Approve Link\")\n  console.debug(approvalPage)\n  \n  const data = {\n    approveCallbackUri: resume,\n    rejectCallbackUri: cancel,\n    description,\n  }\n  try { \n    // get approval link\n    const resp = await client.POST(\"/ocs/v2.php/apps/approve_links/api/v1/link\", {\n      params: {\n        header: {\n          \"OCS-APIRequest\": true,\n        },\n        query: {\n          format: \"json\",\n        },\n\n      },\n      body: data,\n    });\n    console.debug('RESPONSE', resp)\n    const link = resp.data.ocs.data.link\n\n\n    // edit table row\n\n    const res = await client.PUT(\"/index.php/apps/tables/api/1/rows/{rowId}\", {\n      params: {\n        header: {\n          \"OCS-APIRequest\": true,\n        },\n        query: {\n          format: \"json\",\n        },\n        path: {\n          rowId: rowId,\n        },\n\n      },\n      body: {\n        data: {\n          [columnId]: JSON.stringify({\"title\": \"Link to Approve or Reject\", \"value\":\n                        link}),\n        }\n      },\n    });\n\n    console.debug('RESPONSE', res.data)\n\n    return {\n\n      [columnId]: JSON.stringify({\"title\": \"Link to Approve or Reject\", \"value\":\n                        link}),\n\n    }\n\n  } catch (e) {\n\n    console.debug('error', e)\n\n  }\n\n  return {}\n\n}",
+                                        "language": "bun",
+                                        "input_transforms": {
+                                            "rowId": {
+                                                "expr": "results.row_output.data.id",
+                                                "type": "javascript"
+                                            },
+                                            "columnId": {
+                                                "expr": "results.columns.find(c => c.title === \"Approval Link\")?.id",
+                                                "type": "javascript"
+                                            },
+                                            "nextcloud": {
+                                                "expr": "flow_input.authentication.owner",
+                                                "type": "javascript"
+                                            },
+                                            "description": {
+                                                "type": "static",
+                                                "value": "Approve this reservation"
+                                            }
+                                        }
+                                    },
+                                    "summary": "Edit row and and add approval link",
+                                    "suspend": {
+                                        "timeout": 1800,
+                                        "required_events": 1,
+                                        "continue_on_disapprove_timeout": true
+                                    },
+                                    "continue_on_error": false
+                                },
+                                {
+                                    "id": "rox",
+                                    "value": {
+                                        "type": "branchone",
+                                        "default": [
+                                            {
+                                                "id": "rpc",
+                                                "value": {
+                                                    "lock": "# py: 3.12\nanyio==4.13.0\narrow==1.4.0\nattrs==26.1.0\ncaldav==3.1.0\ncertifi==2026.4.22\ncharset-normalizer==3.4.7\nclick==8.3.3\ndnspython==2.8.0\nh11==0.16.0\nhttpcore==1.0.9\nhttpx==0.28.1\nicalendar==7.0.3\nicalendar-searcher==1.0.5\nics==0.7.3\nidna==3.13\njh2==5.0.11\nlxml==6.1.0\nniquests==3.18.6\npython-dateutil==2.9.0.post0\npyyaml==6.0.3\nqh3==1.7.3\nrecurring-ical-events==3.8.1\nsix==1.17.0\ntatsu==5.15.1\ntyping-extensions==4.15.0\ntzdata==2026.1\nurllib3-future==2.19.911\nwassima==2.0.6\nwmill==1.690.0\nx-wr-timezone==2.0.1",
+                                                    "type": "rawscript",
+                                                    "content": "import wmill\nimport caldav\nimport base64\nimport datetime\nfrom ics import Calendar, Event, Attendee, Organizer, Todo\n\n# You can import any PyPi package.\n# See here for more info: https://www.windmill.dev/docs/advanced/dependencies_in_python\n\n# you can use typed resources by doing a type alias to dict\nnextcloud = dict\ndatetime = dict\n\n\ndef main(\n    Nextcloud: nextcloud,\n    calendarName: str,\n    event_start: datetime,\n    event_end: datetime,\n    event_name: str,\n    event_attendees: list[str],\n    event_description: str,\n    event_location: str,\n    organizer_name: str,\n    organizer_mail: str\n):\n    headers = {}\n\n    with caldav.DAVClient(\n        url=Nextcloud[\"baseUrl\"] + \"/remote.php/dav/calendars/\" + Nextcloud[\"userId\"] + \"/\",\n        username=Nextcloud[\"userId\"],\n        password=Nextcloud[\"token\"],\n        headers=headers,\n    ) as client:\n        my_principal = client.principal()\n        calendar = next(\n            filter(\n                lambda calendar: calendar.name == calendarName, my_principal.calendars()\n            )\n        )\n        if calendar is None:\n            raise ValueError(\"Could not find calendar by the name you provided\")\n\n        # Create event\n        e = Event()\n        e.name = event_name\n        e.begin = event_start\n        e.end = event_end\n        e.description = event_description\n        e.location = event_location\n        if event_attendees is not None:\n            for attendee in event_attendees:\n                e.add_attendee(Attendee(common_name=attendee, email=attendee, partstat='NEEDS-ACTION', role='REQ-PARTICIPANT', cutype='INDIVIDUAL'))\n\n        e.organizer = Organizer(common_name=organizer_name, email=organizer_mail)\n\n        calendar.add_event(str(e))\n        return e\n\n",
+                                                    "language": "python3",
+                                                    "input_transforms": {
+                                                        "Nextcloud": {
+                                                            "expr": "flow_input.authentication.owner",
+                                                            "type": "javascript"
+                                                        },
+                                                        "event_end": {
+                                                            "expr": "(results.form.values[\"Datum der Veranstaltung\"] + \"T\" + results.form.values.Nachbereitungsende + \":00.000 +2\")",
+                                                            "type": "javascript"
+                                                        },
+                                                        "event_name": {
+                                                            "expr": "\" Event von \" + results.form.values.Name",
+                                                            "type": "javascript"
+                                                        },
+                                                        "event_start": {
+                                                            "expr": "(results.form.values[\"Datum der Veranstaltung\"] + \"T\" + results.form.values.Vorbereitungsbeginn + \":00.000 +2\")",
+                                                            "type": "javascript"
+                                                        },
+                                                        "calendarName": {
+                                                            "type": "static",
+                                                            "value": "Events"
+                                                        },
+                                                        "event_location": {
+                                                            "expr": "results.form.values[\"Beantragte Freifläche\"]",
+                                                            "type": "javascript"
+                                                        },
+                                                        "organizer_mail": {
+                                                            "type": "static",
+                                                            "value": "organizer@nextcloud.com"
+                                                        },
+                                                        "organizer_name": {
+                                                            "type": "static",
+                                                            "value": "organizer Display name"
+                                                        },
+                                                        "event_attendees": {
+                                                            "expr": "([\n    results.form.values[\"E-Mail-Adresse des Verantwortlichen\"],\n    results.form.values[\"E-Mail-Adresse\"],\n])",
+                                                            "type": "javascript"
+                                                        },
+                                                        "event_description": {
+                                                            "expr": "results.form.values[\"Art und Beschreibung der Veranstaltung\"]",
+                                                            "type": "javascript"
+                                                        }
+                                                    }
+                                                },
+                                                "summary": "Add calendar entry"
+                                            }
+                                        ],
+                                        "branches": [
+                                            {
+                                                "expr": "resume?.error",
+                                                "modules": [],
+                                                "summary": "Rejected/Failed",
+                                                "parallel": true,
+                                                "skip_failure": true
+                                            }
+                                        ]
+                                    },
+                                    "summary": ""
+                                }
+                            ],
+                            "summary": "",
+                            "parallel": true,
+                            "skip_failure": true
+                        }
+                    ]
+                },
+                "summary": ""
+            },
+            {
+                "id": "roy",
+                "value": {
+                    "path": "hub/28155/nextcloud/edit_a_row_in_a_table_in_nextcloud_tables",
+                    "type": "script",
+                    "is_trigger": false,
+                    "input_transforms": {
+                        "rowId": {
+                            "expr": "results.row_output.data.id",
+                            "type": "javascript"
+                        },
+                        "value": {
+                            "expr": "\"\"",
+                            "type": "javascript"
+                        },
+                        "columnId": {
+                            "expr": "results.columns.find(c => c.title === \"Approval Link\")?.id",
+                            "type": "javascript"
+                        },
+                        "nextcloud": {
+                            "expr": "flow_input.authentication.owner",
+                            "type": "javascript"
+                        }
+                    }
+                },
+                "summary": "Edit a row in a table in Nextcloud Tables (nextcloud)"
+            },
+            {
+                "id": "roz",
+                "value": {
+                    "path": "hub/28155/nextcloud/edit_a_row_in_a_table_in_nextcloud_tables",
+                    "type": "script",
+                    "is_trigger": false,
+                    "input_transforms": {
+                        "rowId": {
+                            "expr": "results.row_output.data.id",
+                            "type": "javascript"
+                        },
+                        "value": {
+                            "expr": "resume?.error ? 2 : 1",
+                            "type": "javascript"
+                        },
+                        "columnId": {
+                            "expr": "results.columns.find(c => c.title === \"Status\")?.id",
+                            "type": "javascript"
+                        },
+                        "nextcloud": {
+                            "expr": "flow_input.authentication.owner",
+                            "type": "javascript"
+                        }
+                    }
+                },
+                "summary": "Edit a row in a table in Nextcloud Tables (nextcloud)"
+            }
+        ]
+    },
+    "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+            "time": {
+                "type": "integer"
+            },
+            "user": {
+                "type": "object",
+                "properties": {
+                    "uid": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "order": [
+                    "uid",
+                    "displayName"
+                ]
+            },
+            "event": {
+                "type": "object",
+                "properties": {
+                    "node": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "path": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "order": [
+                            "id",
+                            "path"
+                        ]
+                    },
+                    "class": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "order": [
+                    "node",
+                    "class"
+                ]
+            },
+            "authentication": {
+                "type": "object",
+                "properties": {
+                    "owner": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            },
+                            "userId": {
+                                "type": "string"
+                            },
+                            "baseUrl": {
+                                "type": "string",
+                                "format": "url"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "order": [
+                            "token",
+                            "userId",
+                            "baseUrl"
+                        ]
+                    },
+                    "trigger": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            },
+                            "userId": {
+                                "type": "string"
+                            },
+                            "baseUrl": {
+                                "type": "string",
+                                "format": "url"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "order": [
+                            "token",
+                            "userId",
+                            "baseUrl"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "order": [
+                    "owner",
+                    "trigger"
+                ]
+            }
+        },
+        "required": [],
+        "type": "object",
+        "order": [
+            "time",
+            "user",
+            "event",
+            "authentication"
+        ]
+    }
+}
