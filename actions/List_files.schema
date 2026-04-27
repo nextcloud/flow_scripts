@@ -1,0 +1,49 @@
+{
+    "type": "object",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "ncResource",
+        "folderPath"
+    ],
+    "properties": {
+        "recursive": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        },
+        "folderPath": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "ncResource": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "userId": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "baseUrl": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                }
+            },
+            "description": ""
+        },
+        "contentTypesFilter": {
+            "type": "",
+            "default": null,
+            "description": ""
+        }
+    }
+}

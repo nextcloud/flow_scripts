@@ -1,0 +1,80 @@
+{
+    "type": "object",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "ncResource",
+        "path",
+        "shareType",
+        "shareWith"
+    ],
+    "properties": {
+        "path": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "settings": {
+            "type": "object",
+            "format": "resource-share_settings",
+            "default": {},
+            "properties": {
+                "note": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "label": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "sendMail": {
+                    "type": "boolean",
+                    "description": ""
+                },
+                "shareWith": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "expireDate": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "permissions": {
+                    "type": "number",
+                    "description": ""
+                },
+                "publicUpload": {
+                    "type": "boolean",
+                    "description": ""
+                }
+            },
+            "description": ""
+        },
+        "shareType": {
+            "type": "number",
+            "default": null,
+            "description": ""
+        },
+        "shareWith": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "ncResource": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "description": ""
+        }
+    }
+}

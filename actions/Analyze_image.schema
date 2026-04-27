@@ -1,0 +1,44 @@
+{
+    "type": "object",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "ncResource",
+        "prompt",
+        "imageFileIds"
+    ],
+    "properties": {
+        "model": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "prompt": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "ncResource": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "description": ""
+        },
+        "timeout_ms": {
+            "type": "number",
+            "default": null,
+            "description": ""
+        },
+        "interval_ms": {
+            "type": "number",
+            "default": null,
+            "description": ""
+        },
+        "imageFileIds": {
+            "type": "object",
+            "default": null,
+            "description": ""
+        }
+    }
+}
