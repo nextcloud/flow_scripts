@@ -1,0 +1,168 @@
+{
+    "type": "object",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "nextcloud",
+        "accountId",
+        "fromEmail",
+        "to",
+        "subject",
+        "body"
+    ],
+    "properties": {
+        "cc": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    }
+                }
+            },
+            "format": "resource-recipient",
+            "default": [],
+            "description": "",
+            "originalType": "record[]"
+        },
+        "to": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    }
+                }
+            },
+            "format": "resource-recipient",
+            "default": null,
+            "description": "",
+            "originalType": "record[]"
+        },
+        "bcc": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    }
+                }
+            },
+            "format": "resource-recipient",
+            "default": [],
+            "description": "",
+            "originalType": "record[]"
+        },
+        "body": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "isHtml": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        },
+        "subject": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "accountId": {
+            "type": "number",
+            "default": null,
+            "description": ""
+        },
+        "fromEmail": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "nextcloud": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "userId": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "baseUrl": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "",
+                    "originalType": "string"
+                }
+            },
+            "description": ""
+        },
+        "attachments": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    },
+                    "contentType": {
+                        "type": "string",
+                        "description": "",
+                        "originalType": "string"
+                    }
+                }
+            },
+            "format": "resource-attachment",
+            "default": [],
+            "description": "",
+            "originalType": "record[]"
+        }
+    }
+}

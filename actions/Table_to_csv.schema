@@ -1,0 +1,27 @@
+{
+    "type": "object",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "required": [
+        "nextcloud",
+        "tableId"
+    ],
+    "properties": {
+        "tableId": {
+            "type": "number",
+            "default": null,
+            "description": ""
+        },
+        "filename": {
+            "type": "string",
+            "default": null,
+            "description": "",
+            "originalType": "string"
+        },
+        "nextcloud": {
+            "type": "object",
+            "format": "resource-nextcloud",
+            "default": null,
+            "description": ""
+        }
+    }
+}
